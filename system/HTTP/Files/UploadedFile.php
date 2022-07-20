@@ -137,20 +137,14 @@ class UploadedFile extends File implements UploadedFileInterface
             throw HTTPException::forInvalidFile();
         }
 
-        $name ??= $this->getName();
+        $name        = $name ?? $this->getName();
         $destination = $overwrite ? $targetPath . $name : $this->getDestination($targetPath . $name);
 
         try {
-            $this->hasMoved = move_uploaded_file($this->path, $destination);
+            move_uploaded_file($this->path, $destination);
         } catch (Exception $e) {
             $error   = error_get_last();
-            $message = strip_tags($error['message'] ?? '');
-
-            throw HTTPException::forMoveFailed(basename($this->path), $targetPath, $message);
-        }
-
-        if ($this->hasMoved === false) {
-            $message = 'move_uploaded_file() returned false';
+            $message = isset($error['message']) ? strip_tags($error['message']) : '';
 
             throw HTTPException::forMoveFailed(basename($this->path), $targetPath, $message);
         }
@@ -158,8 +152,9 @@ class UploadedFile extends File implements UploadedFileInterface
         @chmod($targetPath, 0777 & ~umask());
 
         // Success, so store our new information
-        $this->path = $targetPath;
-        $this->name = basename($destination);
+        $this->path     = $targetPath;
+        $this->name     = basename($destination);
+        $this->hasMoved = true;
 
         return true;
     }
@@ -335,7 +330,7 @@ class UploadedFile extends File implements UploadedFileInterface
     public function store(?string $folderName = null, ?string $fileName = null): string
     {
         $folderName = rtrim($folderName ?? date('Ymd'), '/') . '/';
-        $fileName ??= $this->getRandomName();
+        $fileName   = $fileName ?? $this->getRandomName();
 
         // Move the uploaded file to a new location.
         $this->move(WRITEPATH . 'uploads/' . $folderName, $fileName);

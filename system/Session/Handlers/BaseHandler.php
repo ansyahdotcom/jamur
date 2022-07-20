@@ -12,7 +12,6 @@
 namespace CodeIgniter\Session\Handlers;
 
 use Config\App as AppConfig;
-use Config\Cookie as CookieConfig;
 use Psr\Log\LoggerAwareTrait;
 use SessionHandlerInterface;
 
@@ -39,9 +38,6 @@ abstract class BaseHandler implements SessionHandlerInterface
 
     /**
      * Cookie prefix
-     *
-     * The Config\Cookie::$prefix setting is completely ignored.
-     * See https://codeigniter4.github.io/CodeIgniter4/libraries/sessions.html#session-preferences
      *
      * @var string
      */
@@ -85,7 +81,7 @@ abstract class BaseHandler implements SessionHandlerInterface
     /**
      * Current session ID
      *
-     * @var string|null
+     * @var string
      */
     protected $sessionID;
 
@@ -106,27 +102,14 @@ abstract class BaseHandler implements SessionHandlerInterface
 
     public function __construct(AppConfig $config, string $ipAddress)
     {
-        /** @var CookieConfig|null $cookie */
-        $cookie = config('Cookie');
-
-        if ($cookie instanceof CookieConfig) {
-            // Session cookies have no prefix.
-            $this->cookieDomain = $cookie->domain;
-            $this->cookiePath   = $cookie->path;
-            $this->cookieSecure = $cookie->secure;
-        } else {
-            // @TODO Remove this fallback when deprecated `App` members are removed.
-            // `Config/Cookie.php` is absence
-            // Session cookies have no prefix.
-            $this->cookieDomain = $config->cookieDomain;
-            $this->cookiePath   = $config->cookiePath;
-            $this->cookieSecure = $config->cookieSecure;
-        }
-
-        $this->cookieName = $config->sessionCookieName;
-        $this->matchIP    = $config->sessionMatchIP;
-        $this->savePath   = $config->sessionSavePath;
-        $this->ipAddress  = $ipAddress;
+        $this->cookiePrefix = $config->cookiePrefix;
+        $this->cookieDomain = $config->cookieDomain;
+        $this->cookiePath   = $config->cookiePath;
+        $this->cookieSecure = $config->cookieSecure;
+        $this->cookieName   = $config->sessionCookieName;
+        $this->matchIP      = $config->sessionMatchIP;
+        $this->savePath     = $config->sessionSavePath;
+        $this->ipAddress    = $ipAddress;
     }
 
     /**
@@ -138,7 +121,11 @@ abstract class BaseHandler implements SessionHandlerInterface
         return setcookie(
             $this->cookieName,
             '',
-            ['expires' => 1, 'path' => $this->cookiePath, 'domain' => $this->cookieDomain, 'secure' => $this->cookieSecure, 'httponly' => true]
+            1,
+            $this->cookiePath,
+            $this->cookieDomain,
+            $this->cookieSecure,
+            true
         );
     }
 

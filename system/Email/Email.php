@@ -1046,8 +1046,10 @@ class Email
             $output .= $line . $this->newline;
         }
 
-        foreach ($unwrap as $key => $val) {
-            $output = str_replace('{{unwrapped' . $key . '}}', $val, $output);
+        if ($unwrap) {
+            foreach ($unwrap as $key => $val) {
+                $output = str_replace('{{unwrapped' . $key . '}}', $val, $output);
+            }
         }
 
         return $output;

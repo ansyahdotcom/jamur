@@ -75,23 +75,25 @@ class Time extends DateTime
      */
     public function __construct(?string $time = null, $timezone = null, ?string $locale = null)
     {
-        $this->locale = $locale ?: Locale::getDefault();
-
-        $time ??= '';
+        // If no locale was provided, grab it from Locale (set by IncomingRequest for web requests)
+        $this->locale = ! empty($locale) ? $locale : Locale::getDefault();
 
         // If a test instance has been provided, use it instead.
-        if ($time === '' && static::$testNow instanceof self) {
-            $timezone = $timezone ?: static::$testNow->getTimezone();
-            $time     = static::$testNow->format('Y-m-d H:i:s');
+        if ($time === null && static::$testNow instanceof self) {
+            if (empty($timezone)) {
+                $timezone = static::$testNow->getTimezone();
+            }
+
+            $time = static::$testNow->toDateTimeString();
         }
 
-        $timezone       = $timezone ?: date_default_timezone_get();
+        $timezone       = ! empty($timezone) ? $timezone : date_default_timezone_get();
         $this->timezone = $timezone instanceof DateTimeZone ? $timezone : new DateTimeZone($timezone);
 
         // If the time string was a relative string (i.e. 'next Tuesday')
         // then we need to adjust the time going in so that we have a current
         // timezone to work with.
-        if ($time !== '' && static::hasRelativeKeywords($time)) {
+        if (! empty($time) && (is_string($time) && static::hasRelativeKeywords($time))) {
             $instance = new DateTime('now', $this->timezone);
             $instance->modify($time);
             $time = $instance->format('Y-m-d H:i:s');
@@ -213,9 +215,9 @@ class Time extends DateTime
      */
     public static function create(?int $year = null, ?int $month = null, ?int $day = null, ?int $hour = null, ?int $minutes = null, ?int $seconds = null, $timezone = null, ?string $locale = null)
     {
-        $year ??= date('Y');
-        $month ??= date('m');
-        $day ??= date('d');
+        $year    = $year ?? date('Y');
+        $month   = $month ?? date('m');
+        $day     = $day ?? date('d');
         $hour    = empty($hour) ? 0 : $hour;
         $minutes = empty($minutes) ? 0 : $minutes;
         $seconds = empty($seconds) ? 0 : $seconds;
@@ -256,10 +258,7 @@ class Time extends DateTime
      */
     public static function createFromTimestamp(int $timestamp, $timezone = null, ?string $locale = null)
     {
-        $time = new self(gmdate('Y-m-d H:i:s', $timestamp), 'UTC', $locale);
-        $timezone ??= 'UTC';
-
-        return $time->setTimezone($timezone);
+        return new self(gmdate('Y-m-d H:i:s', $timestamp), $timezone ?? 'UTC', $locale);
     }
 
     /**
@@ -482,7 +481,21 @@ class Time extends DateTime
      */
     public function getDst(): bool
     {
-        return $this->format('I') === '1'; // 1 if Daylight Saving Time, 0 otherwise.
+        // grab the transactions that would affect today
+        $start       = strtotime('-1 year', $this->getTimestamp());
+        $end         = strtotime('+2 year', $start);
+        $transitions = $this->timezone->getTransitions($start, $end);
+
+        $daylightSaving = false;
+
+        foreach ($transitions as $transition) {
+            if ($transition['time'] > $this->format('U')) {
+                $daylightSaving = (bool) ($transition['isdst'] ?? $daylightSaving);
+                break;
+            }
+        }
+
+        return $daylightSaving;
     }
 
     /**
@@ -902,7 +915,7 @@ class Time extends DateTime
      */
     public function toLocalizedString(?string $format = null)
     {
-        $format ??= $this->toStringFormat;
+        $format = $format ?? $this->toStringFormat;
 
         return IntlDateFormatter::formatObject($this->toDateTime(), $format, $this->locale);
     }
@@ -1005,7 +1018,7 @@ class Time extends DateTime
      */
     public function humanize()
     {
-        $now  = IntlCalendar::fromDateTime(self::now($this->timezone));
+        $now  = IntlCalendar::fromDateTime(self::now($this->timezone)->toDateTimeString());
         $time = $this->getCalendar()->getTime();
 
         $years   = $now->fieldDifference($time, IntlCalendar::FIELD_YEAR);
@@ -1106,7 +1119,7 @@ class Time extends DateTime
      */
     public function getCalendar()
     {
-        return IntlCalendar::fromDateTime($this);
+        return IntlCalendar::fromDateTime($this->toDateTimeString());
     }
 
     /**

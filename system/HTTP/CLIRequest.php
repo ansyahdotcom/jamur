@@ -15,6 +15,8 @@ use Config\App;
 use RuntimeException;
 
 /**
+ * Class CLIRequest
+ *
  * Represents a request from the command-line. Provides additional
  * tools to interact with that request since CLI requests are not
  * static like HTTP requests might be.
@@ -40,13 +42,6 @@ class CLIRequest extends Request
      * @var array
      */
     protected $options = [];
-
-    /**
-     * Command line arguments (segments and options).
-     *
-     * @var array
-     */
-    protected $args = [];
 
     /**
      * Set the expected HTTP verb
@@ -102,14 +97,6 @@ class CLIRequest extends Request
     }
 
     /**
-     * Returns an array of all CLI arguments (segments and options).
-     */
-    public function getArgs(): array
-    {
-        return $this->args;
-    }
-
-    /**
      * Returns the path segments.
      */
     public function getSegments(): array
@@ -154,13 +141,11 @@ class CLIRequest extends Request
                 $out .= "-{$name} ";
             }
 
-            if ($value === null) {
-                continue;
-            }
-
+            // If there's a space, we need to group
+            // so it will pass correctly.
             if (mb_strpos($value, ' ') !== false) {
                 $out .= '"' . $value . '" ';
-            } else {
+            } elseif ($value !== null) {
                 $out .= "{$value} ";
             }
         }
@@ -187,23 +172,21 @@ class CLIRequest extends Request
                 if ($optionValue) {
                     $optionValue = false;
                 } else {
-                    $this->segments[] = $arg;
-                    $this->args[]     = $arg;
+                    $this->segments[] = filter_var($arg, FILTER_SANITIZE_STRING);
                 }
 
                 continue;
             }
 
-            $arg   = ltrim($arg, '-');
+            $arg   = filter_var(ltrim($arg, '-'), FILTER_SANITIZE_STRING);
             $value = null;
 
             if (isset($args[$i + 1]) && mb_strpos($args[$i + 1], '-') !== 0) {
-                $value       = $args[$i + 1];
+                $value       = filter_var($args[$i + 1], FILTER_SANITIZE_STRING);
                 $optionValue = true;
             }
 
             $this->options[$arg] = $value;
-            $this->args[$arg]    = $value;
         }
     }
 

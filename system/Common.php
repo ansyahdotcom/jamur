@@ -23,7 +23,6 @@ use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\HTTP\URI;
-use CodeIgniter\Model;
 use CodeIgniter\Session\Session;
 use CodeIgniter\Test\TestLogger;
 use Config\App;
@@ -288,38 +287,6 @@ if (! function_exists('csrf_meta')) {
     }
 }
 
-if (! function_exists('csp_style_nonce')) {
-    /**
-     * Generates a nonce attribute for style tag.
-     */
-    function csp_style_nonce(): string
-    {
-        $csp = Services::csp();
-
-        if (! $csp->enabled()) {
-            return '';
-        }
-
-        return 'nonce="' . $csp->getStyleNonce() . '"';
-    }
-}
-
-if (! function_exists('csp_script_nonce')) {
-    /**
-     * Generates a nonce attribute for script tag.
-     */
-    function csp_script_nonce(): string
-    {
-        $csp = Services::csp();
-
-        if (! $csp->enabled()) {
-            return '';
-        }
-
-        return 'nonce="' . $csp->getScriptNonce() . '"';
-    }
-}
-
 if (! function_exists('db_connect')) {
     /**
      * Grabs a database connection and returns it to the user.
@@ -412,7 +379,7 @@ if (! function_exists('esc')) {
      * If $data is an array, then it loops over it, escaping each
      * 'value' of the key/value pairs.
      *
-     * Valid context values: html, js, css, url, attr, raw
+     * Valid context values: html, js, css, url, attr, raw, null
      *
      * @param array|string $data
      * @param string       $encoding
@@ -477,7 +444,7 @@ if (! function_exists('force_https')) {
      *
      * @throws HTTPException
      */
-    function force_https(int $duration = 31_536_000, ?RequestInterface $request = null, ?ResponseInterface $response = null)
+    function force_https(int $duration = 31536000, ?RequestInterface $request = null, ?ResponseInterface $response = null)
     {
         if ($request === null) {
             $request = Services::request(null, true);
@@ -512,9 +479,9 @@ if (! function_exists('force_https')) {
         $uri = URI::createURIString(
             'https',
             $baseURL,
-            $request->getUri()->getPath(), // Absolute URIs should use a "/" for an empty path
-            $request->getUri()->getQuery(),
-            $request->getUri()->getFragment()
+            $request->uri->getPath(), // Absolute URIs should use a "/" for an empty path
+            $request->uri->getQuery(),
+            $request->uri->getFragment()
         );
 
         // Set an HSTS header
@@ -592,7 +559,7 @@ if (! function_exists('helper')) {
     {
         static $loaded = [];
 
-        $loader = Services::locator();
+        $loader = Services::locator(true);
 
         if (! is_array($filenames)) {
             $filenames = [$filenames];
@@ -628,14 +595,18 @@ if (! function_exists('helper')) {
 
                 $includes[] = $path;
                 $loaded[]   = $filename;
-            } else {
-                // No namespaces, so search in all available locations
+            }
+
+            // No namespaces, so search in all available locations
+            else {
                 $paths = $loader->search('Helpers/' . $filename);
 
                 foreach ($paths as $path) {
-                    if (strpos($path, APPPATH . 'Helpers' . DIRECTORY_SEPARATOR) === 0) {
+                    if (strpos($path, APPPATH) === 0) {
+                        // @codeCoverageIgnoreStart
                         $appHelper = $path;
-                    } elseif (strpos($path, SYSTEMPATH . 'Helpers' . DIRECTORY_SEPARATOR) === 0) {
+                    // @codeCoverageIgnoreEnd
+                    } elseif (strpos($path, SYSTEMPATH) === 0) {
                         $systemHelper = $path;
                     } else {
                         $localIncludes[] = $path;
@@ -645,12 +616,14 @@ if (! function_exists('helper')) {
 
                 // App-level helpers should override all others
                 if (! empty($appHelper)) {
+                    // @codeCoverageIgnoreStart
                     $includes[] = $appHelper;
                     $loaded[]   = $filename;
+                    // @codeCoverageIgnoreEnd
                 }
 
                 // All namespaced files get added in next
-                $includes = [...$includes, ...$localIncludes];
+                $includes = array_merge($includes, $localIncludes);
 
                 // And the system default one should be added in last.
                 if (! empty($systemHelper)) {
@@ -671,17 +644,28 @@ if (! function_exists('is_cli')) {
     /**
      * Check if PHP was invoked from the command line.
      *
-     * @codeCoverageIgnore Cannot be tested fully as PHPUnit always run in php-cli
+     * @codeCoverageIgnore Cannot be tested fully as PHPUnit always run in CLI
      */
     function is_cli(): bool
     {
-        if (in_array(PHP_SAPI, ['cli', 'phpdbg'], true)) {
+        if (PHP_SAPI === 'cli') {
             return true;
         }
 
-        // PHP_SAPI could be 'cgi-fcgi', 'fpm-fcgi'.
-        // See https://github.com/codeigniter4/CodeIgniter4/pull/5393
-        return ! isset($_SERVER['REMOTE_ADDR']) && ! isset($_SERVER['REQUEST_METHOD']);
+        if (defined('STDIN')) {
+            return true;
+        }
+
+        if (stristr(PHP_SAPI, 'cgi') && getenv('TERM')) {
+            return true;
+        }
+
+        if (! isset($_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['argv']) && count($_SERVER['argv']) > 0) {
+            return true;
+        }
+
+        // if source of request is from CLI, the `$_SERVER` array will not populate this key
+        return ! isset($_SERVER['REQUEST_METHOD']);
     }
 }
 
@@ -741,23 +725,8 @@ if (! function_exists('lang')) {
      */
     function lang(string $line, array $args = [], ?string $locale = null)
     {
-        $language = Services::language();
-
-        // Get active locale
-        $activeLocale = $language->getLocale();
-
-        if ($locale && $locale !== $activeLocale) {
-            $language->setLocale($locale);
-        }
-
-        $line = $language->getLine($line, $args);
-
-        if ($locale && $locale !== $activeLocale) {
-            // Reset to active locale
-            $language->setLocale($activeLocale);
-        }
-
-        return $line;
+        return Services::language($locale)
+            ->getLine($line, $args);
     }
 }
 
@@ -800,11 +769,7 @@ if (! function_exists('model')) {
     /**
      * More simple way of getting model instances from Factories
      *
-     * @template T of Model
-     *
-     * @param class-string<T> $name
-     *
-     * @return T
+     * @return mixed
      */
     function model(string $name, bool $getShared = true, ?ConnectionInterface &$conn = null)
     {
@@ -841,6 +806,11 @@ if (! function_exists('old')) {
             return $default;
         }
 
+        // If the result was serialized array or string, then unserialize it for use...
+        if (is_string($value) && (strpos($value, 'a:') === 0 || strpos($value, 's:') === 0)) {
+            $value = unserialize($value);
+        }
+
         return $escape === false ? $value : esc($value, $escape);
     }
 }
@@ -849,7 +819,9 @@ if (! function_exists('redirect')) {
     /**
      * Convenience method that works with the current global $request and
      * $router instances to redirect using named/reverse-routed routes
-     * to determine the URL to go to.
+     * to determine the URL to go to. If nothing is found, will treat
+     * as a traditional redirect and pass the string in, letting
+     * $response->redirect() determine the correct method and code.
      *
      * If more control is needed, you must use $response->redirect explicitly.
      *
@@ -981,6 +953,7 @@ if (! function_exists('single_service')) {
         $method = new ReflectionMethod($service, $name);
         $count  = $method->getNumberOfParameters();
         $mParam = $method->getParameters();
+        $params = $params ?? [];
 
         if ($count === 1) {
             // This service needs only one argument, which is the shared
@@ -1013,26 +986,10 @@ if (! function_exists('slash_item')) {
      */
     function slash_item(string $item): ?string
     {
-        $config = config(App::class);
-
-        if (! property_exists($config, $item)) {
-            return null;
-        }
-
+        $config     = config(App::class);
         $configItem = $config->{$item};
 
-        if (! is_scalar($configItem)) {
-            throw new RuntimeException(sprintf(
-                'Cannot convert "%s::$%s" of type "%s" to type "string".',
-                App::class,
-                $item,
-                gettype($configItem)
-            ));
-        }
-
-        $configItem = trim((string) $configItem);
-
-        if ($configItem === '') {
+        if (! isset($configItem) || empty(trim($configItem))) {
             return $configItem;
         }
 
@@ -1141,7 +1098,7 @@ if (! function_exists('view_cell')) {
      * View cells are used within views to insert HTML chunks that are managed
      * by other classes.
      *
-     * @param array|string|null $params
+     * @param null $params
      *
      * @throws ReflectionException
      */
@@ -1194,6 +1151,7 @@ if (! function_exists('class_uses_recursive')) {
 
         $results = [];
 
+        // @phpstan-ignore-next-line
         foreach (array_reverse(class_parents($class)) + [$class => $class] as $class) {
             $results += trait_uses_recursive($class);
         }

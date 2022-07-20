@@ -188,7 +188,7 @@ class GDHandler extends BaseHandler
             imagesavealpha($dest, true);
         }
 
-        $copy($dest, $src, 0, 0, (int) $this->xAxis, (int) $this->yAxis, $this->width, $this->height, $origWidth, $origHeight);
+        $copy($dest, $src, 0, 0, $this->xAxis, $this->yAxis, $this->width, $this->height, $origWidth, $origHeight);
 
         imagedestroy($src);
         $this->resource = $dest;
@@ -224,12 +224,6 @@ class GDHandler extends BaseHandler
         }
 
         $this->ensureResource();
-
-        // for png and webp we can actually preserve transparency
-        if (in_array($this->image()->imageType, $this->supportTransparency, true)) {
-            imagealphablending($this->resource, false);
-            imagesavealpha($this->resource, true);
-        }
 
         switch ($this->image()->imageType) {
             case IMAGETYPE_GIF:
@@ -457,7 +451,7 @@ class GDHandler extends BaseHandler
          * Get the rest of the string and split it into 2-length
          * hex values:
          */
-        $opacity = (int) ($options['opacity'] * 127);
+        $opacity = ($options['opacity'] * 127);
 
         // Allow opacity to be applied to the text
         imagealphablending($src, true);
@@ -478,9 +472,9 @@ class GDHandler extends BaseHandler
         // Add the shadow to the source image
         if (! empty($options['fontPath'])) {
             // We have to add fontheight because imagettftext locates the bottom left corner, not top-left corner.
-            imagettftext($src, $options['fontSize'], 0, (int) $xAxis, (int) ($yAxis + $options['fontheight']), $color, $options['fontPath'], $text);
+            imagettftext($src, $options['fontSize'], 0, $xAxis, $yAxis + $options['fontheight'], $color, $options['fontPath'], $text);
         } else {
-            imagestring($src, (int) $options['fontSize'], (int) $xAxis, (int) $yAxis, $text, $color);
+            imagestring($src, $options['fontSize'], $xAxis, $yAxis, $text, $color);
         }
 
         $this->resource = $src;

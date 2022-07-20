@@ -293,9 +293,9 @@ abstract class BaseModel
         $this->tempAllowCallbacks = $this->allowCallbacks;
 
         /**
-         * @var Validation|null $validation
+         * @var Validation $validation
          */
-        $validation ??= Services::validation(null, false);
+        $validation       = $validation ?? Services::validation(null, false);
         $this->validation = $validation;
 
         $this->initialize();
@@ -366,7 +366,7 @@ abstract class BaseModel
      * This methods works only with dbCalls
      *
      * @param array|null $set       An associative array of insert values
-     * @param bool|null  $escape    Whether to escape values
+     * @param bool|null  $escape    Whether to escape values and identifiers
      * @param int        $batchSize The size of the batch to run
      * @param bool       $testing   True means only number of records is returned, false will execute the query
      *
@@ -763,7 +763,7 @@ abstract class BaseModel
      * Compiles batch insert runs the queries, validating each row prior.
      *
      * @param array|null $set       an associative array of insert values
-     * @param bool|null  $escape    Whether to escape values
+     * @param bool|null  $escape    Whether to escape values and identifiers
      * @param int        $batchSize The size of the batch to run
      * @param bool       $testing   True means only number of records is returned, false will execute the query
      *
@@ -1031,10 +1031,6 @@ abstract class BaseModel
             return false;
         }
 
-        if ($this->useTimestamps && $this->updatedField && ! array_key_exists($this->updatedField, (array) $data)) {
-            $data[$this->updatedField] = $this->setDate();
-        }
-
         return $this->doReplace($data, $returnSQL);
     }
 
@@ -1076,14 +1072,14 @@ abstract class BaseModel
         $pager = Services::pager(null, null, false);
 
         if ($segment) {
-            $pager->setSegment($segment, $group);
+            $pager->setSegment($segment);
         }
 
         $page = $page >= 1 ? $page : $pager->getCurrentPage($group);
         // Store it in the Pager library, so it can be paginated in the views.
         $this->pager = $pager->store($group, $page, $perPage, $this->countAllResults(false), $segment);
         $perPage     = $this->pager->getPerPage($group);
-        $offset      = ($pager->getCurrentPage($group) - 1) * $perPage;
+        $offset      = ($page - 1) * $perPage;
 
         return $this->findAll($perPage, $offset);
     }
@@ -1344,9 +1340,7 @@ abstract class BaseModel
             return true;
         }
 
-        $this->validation->reset()->setRules($rules, $this->validationMessages);
-
-        return $this->validation->run($data, null, $this->DBGroup);
+        return $this->validation->setRules($rules, $this->validationMessages)->run($data, null, $this->DBGroup);
     }
 
     /**
@@ -1491,9 +1485,9 @@ abstract class BaseModel
     }
 
     /**
-     * Takes a class and returns an array of it's public and protected
+     * Takes a class an returns an array of it's public and protected
      * properties as an array suitable for use in creates and updates.
-     * This method uses objectToRawArray() internally and does conversion
+     * This method use objectToRawArray internally and does conversion
      * to string on all Time instances
      *
      * @param object|string $data        Data
@@ -1523,7 +1517,7 @@ abstract class BaseModel
     }
 
     /**
-     * Takes a class and returns an array of its public and protected
+     * Takes a class an returns an array of it's public and protected
      * properties as an array with raw values.
      *
      * @param object|string $data        Data
@@ -1580,7 +1574,7 @@ abstract class BaseModel
         // properties representing the collection elements, we need to grab
         // them as an array.
         if (is_object($data) && ! $data instanceof stdClass) {
-            $data = $this->objectToArray($data, ($type === 'update'), true);
+            $data = $this->objectToArray($data, true, true);
         }
 
         // If it's still a stdClass, go ahead and convert to
