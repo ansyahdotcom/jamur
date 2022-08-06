@@ -11,5 +11,5 @@ class JarakModel extends Model
     protected $useTimestamps = true;
     protected $createdField  = 'created_jr';
     protected $updatedField  = 'updated_jr';
-    protected $allowedFields = ['id_tr', 'id_jr', 'jarak', 'created_jr'];
+    protected $allowedFields = ['id_br', 'id_awal', 'id_kt', 'jarak', 'created_jr'];
 }

@@ -34,6 +34,7 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Auth::index');
 // $routes->get('/dashboard', 'Dashboard::index');
 $routes->get('/logout', 'Auth::logout');
+$routes->post('/test_jarak', 'Testing::test_jarak');
 
 /*
  * --------------------------------------------------------------------

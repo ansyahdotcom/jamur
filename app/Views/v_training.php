@@ -41,7 +41,7 @@
                                 <?php
                                 $i = 1;
                                 foreach ($train as $tr) :
-                                    $id_tr = $tr['id_tr'];
+                                    $id_awal = $tr['id_awal'];
                                 ?>
                                     <tr>
                                         <td><?= $i++; ?></td>
@@ -49,10 +49,10 @@
                                         <td><?= $tr['kelembaban']; ?></td>
                                         <td><?= $tr['produksi']; ?></td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ubahtr<?= $id_tr ?>">
+                                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ubahtr<?= $id_awal ?>">
                                                 Ubah
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapustr<?= $id_tr ?>">
+                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapustr<?= $id_awal ?>">
                                                 Hapus
                                             </button>
                                         </td>
@@ -95,14 +95,14 @@
 </div>
 <?php
 foreach ($train as $tr) :
-    $id_tr = $tr['id_tr'];
+    $id_awal = $tr['id_awal'];
     $suhu = $tr['suhu'];
     $kelembaban = $tr['kelembaban'];
     $produksi = $tr['produksi'];
 ?>
 
     <!-- Modal Ubah -->
-    <div class="modal fade" id="ubahtr<?= $id_tr; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ubahtr<?= $id_awal; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -117,7 +117,7 @@ foreach ($train as $tr) :
                         <div class="form-group">
                             <label for="suhu">Suhu</label>
                             <input type="number" id="suhu" name="suhu" class="form-control" placeholder="Isikan hanya angka" autocomplete="off" required value="<?= $suhu; ?>">
-                            <input type="hidden" id="id_tr" name="id_tr" value="<?= $id_tr ?>">
+                            <input type="hidden" id="id_awal" name="id_awal" value="<?= $id_awal ?>">
                         </div>
                         <div class="form-group">
                             <label for="kelembaban">Kelembaban</label>
@@ -137,7 +137,7 @@ foreach ($train as $tr) :
         </div>
     </div>
     <!-- Modal hapus -->
-    <div class="modal fade" id="hapustr<?= $id_tr; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="hapustr<?= $id_awal; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -150,7 +150,7 @@ foreach ($train as $tr) :
                     <div class="modal-body">
                         <?= csrf_field(); ?>
                         <p>Apakah Anda yakin akan menghapus data ini?</p>
-                        <input type="hidden" name="id_tr" value="<?= $id_tr; ?>">
+                        <input type="hidden" name="id_awal" value="<?= $id_awal; ?>">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>

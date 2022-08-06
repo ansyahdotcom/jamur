@@ -49,13 +49,24 @@ class Training extends BaseController
         $i = 0;
         //looping untuk mengambil data
         foreach ($sheet as $data) {
+            if ($data[3] == 'low') {
+                $kategori = 1;
+            } else if ($data[3] == 'medium') {
+                $kategori = 2;
+            } else if ($data[3] == 'high') {
+                $kategori = 3;
+            } else {
+                $kategori = 0;
+            }
             if ($i >= 1) {
 
                 $insert = [
                     'suhu' => $data[0],
                     'kelembaban' => $data[1],
-                    'produksi' => $data[2]
+                    'produksi' => $data[2],
+                    'id_kt' => $kategori,
                 ];
+                // dd($insert);
                 $this->TrainingModel->add($insert);
             }
             $i++;
@@ -66,12 +77,12 @@ class Training extends BaseController
 
     public function ubah()
     {
-        $id_tr = $this->request->getVar('id_tr');
+        $id_awal = $this->request->getVar('id_awal');
         $suhu = $this->request->getVar('suhu');
         $kelembaban = $this->request->getVar('kelembaban');
         $produksi = $this->request->getVar('produksi');
         $data = [
-            'id_tr' => $id_tr,
+            'id_awal' => $id_awal,
             'suhu' => $suhu,
             'kelembaban' => $kelembaban,
             'produksi' => $produksi
@@ -83,8 +94,8 @@ class Training extends BaseController
 
     public function hapus()
     {
-        $id_tr = $this->request->getVar('id_tr');
-        $hapus = $this->TrainingModel->delete($id_tr);
+        $id_awal = $this->request->getVar('id_awal');
+        $hapus = $this->TrainingModel->delete($id_awal);
         if ($hapus) {
             session()->setFlashdata('message', 'delete');
             return redirect()->back();

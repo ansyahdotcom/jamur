@@ -106,12 +106,12 @@
                     </ul>
                     <ul class="nav nav-primary">
                         <li class="nav-item <?php $uri = service('uri');
-                                            if ($uri->getSegment(1) == 'hitung') {
+                                            if ($uri->getSegment(1) == 'testing') {
                                                 echo 'active';
                                             } ?>">
-                            <a href="/hitung">
+                            <a href="/testing">
                                 <i class="flaticon-analytics"></i>
-                                <p>Data Perhitungan Fuzzy</p>
+                                <p>Testing Data</p>
                             </a>
                         </li>
                     </ul>
@@ -198,6 +198,131 @@
             $('#basic-datatables').DataTable({});
         });
     </script>
+    <?php
+    $db = \Config\Database::connect();
+    $nilai = $db->query("SELECT * FROM data_awal, kategori
+                        WHERE data_awal.id_kt = kategori.id_kt
+                        ORDER BY data_awal.id_awal ASC");
+    ?>
+
+    <script>
+        var bubbleChart = document.getElementById('bubbleChart');
+
+        var myBubbleChart = new Chart(bubbleChart, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                        label: "Low",
+                        // data:[{x:25,y:17,r:25},{x:30,y:25,r:28}, {x:35,y:30,r:3}], 
+                        data: [
+                            <?php
+                            foreach ($nilai->getResultArray() as $data) {
+                                if ($data['id_kt'] == 1) {
+                                    echo '{x:' . $data['suhu'] .  ',y:' .  $data['kelembaban'] . ',r:3}, ';
+                                }
+                            }
+                            ?>
+                        ],
+                        backgroundColor: "#716aca"
+                    },
+                    {
+                        label: "Medium",
+                        data: [
+                            <?php
+                            foreach ($nilai->getResultArray() as $data) {
+                                if ($data['id_kt'] == 2) {
+                                    echo '{x:' . $data['suhu'] .  ',y:' .  $data['kelembaban'] . ',r:3}, ';
+                                }
+                            }
+                            ?>
+                        ],
+                        backgroundColor: "#1d7af3"
+                    },
+                    {
+                        label: "High",
+                        data: [
+                            <?php
+                            foreach ($nilai->getResultArray() as $data) {
+                                if ($data['id_kt'] == 3) {
+                                    echo '{x:' . $data['suhu'] .  ',y:' .  $data['kelembaban'] . ',r:3}, ';
+                                }
+                            }
+                            ?>
+                        ],
+                        backgroundColor: "#f3a719"
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'bottom'
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+            }
+        });
+    </script>
+
+    <!-- <script>
+        const scatter = document.getElementById('scatter');
+        const label = [
+            // <?php
+                // foreach ($nilai->getResultArray() as $data) {
+                //     echo '"' . $data['kelembaban'] .  '"' . ', ';
+                // } 
+                ?>
+        ];
+        const data = [
+            // <?php
+                // foreach ($nilai->getResultArray() as $data) {
+                //     echo $data['suhu'] . ', ';
+                // } 
+                ?>
+        ];
+        const config = {
+            type: 'scatter',
+            data: {
+                labels: label,
+                datasets: [{
+                    label: "Suhu",
+                    borderColor: "#1d7af3",
+                    pointBackgroundColor: "#1d7af3",
+                    pointHoverRadius: 1,
+                    pointHoverBorderWidth: 1,
+                    pointRadius: 1,
+                    backgroundColor: 'transparent',
+                    fill: true,
+                    borderWidth: 2,
+                    data: datasuhu
+                }]
+            },
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Scatter Chart'
+                    }
+                }
+            },
+        };
+    </script> -->
 
 </body>
 
