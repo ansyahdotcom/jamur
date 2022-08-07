@@ -1,7 +1,7 @@
 <?= $this->extend('layout/template'); ?>
 <?= $this->section('content'); ?>
 <div class="page-inner">
-    <h4 class="page-title">Data Training</h4>
+    <h4 class="page-title">Data Testing</h4>
     <div class="row">
         <div class="col-md-6">
             <div class="card">

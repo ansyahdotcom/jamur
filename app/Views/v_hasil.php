@@ -1,23 +1,7 @@
 <?= $this->extend('layout/template'); ?>
 <?= $this->section('content'); ?>
 <div class="page-inner">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Grafik Data Training</h4>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="bubbleChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <h2><strong>Hasil Training Data Terakhir</strong></h2>
-    </div>
+    <h4 class="page-title">Hasil Perhitungan</h4>
     <div class="row">
         <div class="col-md-6">
             <?php foreach ($data_baru as $dt_br) : ?>
@@ -84,5 +68,4 @@
         </div>
     </div>
 </div>
-
 <?= $this->endSection(); ?>

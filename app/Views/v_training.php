@@ -25,7 +25,7 @@
                                     <th>Suhu</th>
                                     <th>Kelembaban</th>
                                     <th>Produksi</th>
-                                    <th>Aksi</th>
+                                    <!-- <th>Aksi</th> -->
                                 </tr>
                             </thead>
                             <tfoot>
@@ -34,7 +34,7 @@
                                     <th>Suhu</th>
                                     <th>Kelembaban</th>
                                     <th>Produksi</th>
-                                    <th>Aksi</th>
+                                    <!-- <th>Aksi</th> -->
                                 </tr>
                             </tfoot>
                             <tbody>
@@ -48,14 +48,14 @@
                                         <td><?= $tr['suhu']; ?></td>
                                         <td><?= $tr['kelembaban']; ?></td>
                                         <td><?= $tr['produksi']; ?></td>
-                                        <td>
+                                        <!-- <td>
                                             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ubahtr<?= $id_awal ?>">
                                                 Ubah
                                             </button>
                                             <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapustr<?= $id_awal ?>">
                                                 Hapus
                                             </button>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

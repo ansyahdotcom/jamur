@@ -36,7 +36,7 @@
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="blue">
                 <a href="<?= base_url(""); ?>" class="logo" style="color: white;">
-                    FUZZY CABAI
+                    FORECASTING
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon">
@@ -159,7 +159,7 @@
             <footer class="footer">
                 <div class="container-fluid">
                     <div class="copyright ml-auto">
-                        FUZZY CABAI
+                         FORECASTING PRODUKSI JAMUR
                     </div>
                 </div>
             </footer>
