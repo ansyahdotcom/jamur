@@ -1,18 +1,18 @@
 <?= $this->extend('layout/template'); ?>
 <?= $this->section('content'); ?>
 <div class="page-inner">
-    <h4 class="page-title">Data Testing</h4>
+    <h4 class="page-title">Testing Data</h4>
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <form action="test_jarak" method="post">
                     <div class="form-group">
                         <label for="suhu">Suhu</label>
-                        <input type="number" class="form-control" id="suhu" name="suhu" placeholder="Isikan hanya angka" autocomplete="off">
+                        <input type="text" class="form-control" id="suhu" name="suhu" placeholder="Isikan hanya angka" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="kelembaban">Kelembaban</label>
-                        <input type="number" class="form-control" id="kelembaban" name="kelembaban" placeholder="Isikan hanya angka" autocomplete="off">
+                        <input type="text" class="form-control" id="kelembaban" name="kelembaban" placeholder="Isikan hanya angka" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="k">K</label>

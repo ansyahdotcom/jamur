@@ -62,10 +62,10 @@ $(function() {
             icon: 'error',
             title: 'Gagal menghapus data',
         });
-    } else if (flashData == 'ubah_stppm') {
+    } else if (flashData == 'notzero') {
         Toast.fire({
-            icon: 'success',
-            title: 'Pilihan ppm berhasil diubah',
+            icon: 'error',
+            title: 'Nilai K tidak boleh 0!',
         });
     }
 });

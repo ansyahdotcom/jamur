@@ -9,9 +9,6 @@
                     <button type="button" class="btn btn-danger text-right" style="float: right;" data-toggle="modal" data-target="#hapusSemua">
                         Hapus semua data
                     </button>
-                    <button type="button" class="btn btn-success text-right mr-2" style="float: right;" data-toggle="modal" data-target="#trainingData">
-                        Training data
-                    </button>
                     <button type="button" class="btn btn-primary text-right mr-2" style="float: right;" data-toggle="modal" data-target="#importData">
                         Import data
                     </button>

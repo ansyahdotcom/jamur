@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Grafik Data Training</h4>
+                    <h4 class="card-title">Grafik Sebaran Data Training</h4>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="row">
-        <h2><strong>Hasil Training Data Terakhir</strong></h2>
+        <h2><strong>Hasil Testing Data Terakhir</strong></h2>
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <h2><strong>Kesimpulan</strong></h2>
-                <h3>Hasil produksi :
+                <h3>Perkiraan hasil produksi :
                     <strong>
                         <?php if ($dt_br['id_kt'] == 1) {
                             echo "Rendah";

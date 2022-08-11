@@ -45,79 +45,84 @@ class Testing extends BaseController
         $suhu_br = $this->request->getVar('suhu');
         $kelembaban_br = $this->request->getVar('kelembaban');
         $k = $this->request->getVar('k');
-        $data_baru = [
-            'suhu_br' => $suhu_br,
-            'kelembaban_br' => $kelembaban_br,
-            'k' => $k,
-        ];
-        $this->DtBaruModel->insert($data_baru);
-
-        // ambil data id_br yang baru
-        $id = $this->DtBaruModel->select('id_br')->orderBy('id_br DESC')->first();
-
-        // hitung jarak
-        $data_training = $this->TrainingModel->findAll();
-        foreach ($data_training as $dt_tr) {
-            $suhu = $dt_tr['suhu'];
-            $kelembaban = $dt_tr['kelembaban'];
-            $jarak = sqrt(pow($suhu - $suhu_br, 2) + pow($kelembaban - $kelembaban_br, 2));
-            $data_jarak = [
-                'id_br' => $id['id_br'],
-                'id_awal' => $dt_tr['id_awal'],
-                'jarak_temp' => $jarak,
+        // validasi nilai K
+        if ($k == 0) {
+            session()->setFlashdata('message', 'notzero');
+            return redirect()->to('/testing');
+        } else {
+            $data_baru = [
+                'suhu_br' => $suhu_br,
+                'kelembaban_br' => $kelembaban_br,
+                'k' => $k,
             ];
-            // simpan di tabel temporary
-            $this->JarakTempModel->insert($data_jarak);
-        }
-        // ambil hasil hitung dari nilai K n simpan di tabel jarak
-        $db = \Config\Database::connect();
-        $data_jarak = $db->query("SELECT jarak_temp.id_br, jarak_temp.id_awal, jarak_temp.jarak_temp FROM jarak_temp, data_awal
-        WHERE jarak_temp.id_awal = data_awal.id_awal
-        ORDER BY jarak_temp.jarak_temp ASC LIMIT $k")->getResultArray();
-        foreach ($data_jarak as $dt_jr) {
-            $jarak_br = [
-                'id_br' => $dt_jr['id_br'],
-                'id_awal' => $dt_jr['id_awal'],
-                'jarak' => $dt_jr['jarak_temp']
-            ];
-            $this->JarakModel->insert($jarak_br);
-        }
+            $this->DtBaruModel->insert($data_baru);
 
-        // hapus data jarak temporary
-        $this->JarakTempModel->emptyTable('jarak_temp');
-        
-        // hitung kategori terbanyak
-        $low = $db->query("SELECT kategori.id_kt FROM jarak, data_awal, kategori
+            // ambil data id_br yang baru
+            $id = $this->DtBaruModel->select('id_br')->orderBy('id_br DESC')->first();
+
+            // hitung jarak
+            $data_training = $this->TrainingModel->findAll();
+            foreach ($data_training as $dt_tr) {
+                $suhu = $dt_tr['suhu'];
+                $kelembaban = $dt_tr['kelembaban'];
+                $jarak = sqrt(pow($suhu - $suhu_br, 2) + pow($kelembaban - $kelembaban_br, 2));
+                $data_jarak = [
+                    'id_br' => $id['id_br'],
+                    'id_awal' => $dt_tr['id_awal'],
+                    'jarak_temp' => $jarak,
+                ];
+                // simpan di tabel temporary
+                $this->JarakTempModel->insert($data_jarak);
+            }
+            // ambil hasil hitung dari nilai K n simpan di tabel jarak
+            $db = \Config\Database::connect();
+            $data_jarak = $db->query("SELECT jarak_temp.id_br, jarak_temp.id_awal, jarak_temp.jarak_temp FROM jarak_temp, data_awal
+            WHERE jarak_temp.id_awal = data_awal.id_awal
+            ORDER BY jarak_temp.jarak_temp ASC LIMIT $k")->getResultArray();
+            foreach ($data_jarak as $dt_jr) {
+                $jarak_br = [
+                    'id_br' => $dt_jr['id_br'],
+                    'id_awal' => $dt_jr['id_awal'],
+                    'jarak' => $dt_jr['jarak_temp']
+                ];
+                $this->JarakModel->insert($jarak_br);
+            }
+
+            // hapus data jarak temporary
+            $this->JarakTempModel->emptyTable('jarak_temp');
+
+            // hitung kategori terbanyak
+            $low = $db->query("SELECT kategori.id_kt FROM jarak, data_awal, kategori
                             WHERE jarak.id_awal = data_awal.id_awal
                             AND data_awal.id_kt = kategori.id_kt
                             AND kategori.id_kt = 1")->getResultArray();
-        $medium = $db->query("SELECT kategori.id_kt FROM jarak, data_awal, kategori
+            $medium = $db->query("SELECT kategori.id_kt FROM jarak, data_awal, kategori
                             WHERE jarak.id_awal = data_awal.id_awal
                             AND data_awal.id_kt = kategori.id_kt
                             AND kategori.id_kt = 2")->getResultArray();
-        $high = $db->query("SELECT kategori.id_kt FROM jarak, data_awal, kategori
+            $high = $db->query("SELECT kategori.id_kt FROM jarak, data_awal, kategori
                             WHERE jarak.id_awal = data_awal.id_awal
                             AND data_awal.id_kt = kategori.id_kt
                             AND kategori.id_kt = 3")->getResultArray();
-        $loww = count($low);
-        $mediumm = count($medium);
-        $highh = count($high);
-        if ($loww > $mediumm && $loww > $highh) {
-            $hasil = 1;
-        } else if ($mediumm > $loww && $mediumm > $highh) {
-            $hasil = 2;
-        } else if ($highh > $mediumm && $highh > $loww) {
-            $hasil = 3;
+            $loww = count($low);
+            $mediumm = count($medium);
+            $highh = count($high);
+            if ($loww > $mediumm && $loww > $highh) {
+                $hasil = 1;
+            } else if ($mediumm > $loww && $mediumm > $highh) {
+                $hasil = 2;
+            } else if ($highh > $mediumm && $highh > $loww) {
+                $hasil = 3;
+            }
+            // ubah data id_kt di tabel data baru
+            $data_ubah = [
+                'id_br' => $id['id_br'],
+                'id_kt' => $hasil,
+            ];
+            $this->DtBaruModel->save($data_ubah);
+
+            return redirect()->to('/testing/hasil');
         }
-        // ubah data id_kt di tabel data baru
-        $data_ubah = [
-            'id_br' => $id['id_br'],
-            'id_kt' => $hasil,
-        ];
-        $this->DtBaruModel->save($data_ubah);
-
-        return redirect()->to('/testing/hasil');
-
     }
 
     public function hasil()
@@ -138,5 +143,4 @@ class Testing extends BaseController
         ];
         echo view('v_hasil', $data);
     }
-
 }
