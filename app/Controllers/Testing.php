@@ -28,12 +28,12 @@ class Testing extends BaseController
     {
         $username = $this->AdminModel->where(['username' => session()->get('username')])->first();
         $data = [
-            'title' => 'Halaman Data Testing',
+            'title' => 'Halaman Testing Data',
             'nama' => $username,
         ];
 
         if ($username == NULL) {
-            return redirect()->to('/auth');
+            echo view('v_test', $data);
         } else {
             echo view('v_testing', $data);
         }
@@ -41,13 +41,29 @@ class Testing extends BaseController
 
     public function test_jarak()
     {
+        $username = $this->AdminModel->where(['username' => session()->get('username')])->first();
+        
         // ambil data dari form
-        $suhu_br = $this->request->getVar('suhu');
-        $kelembaban_br = $this->request->getVar('kelembaban');
-        $k = $this->request->getVar('k');
+        $suhu1 = $this->request->getVar('suhu');
+        $kelembaban1 = $this->request->getVar('kelembaban');
+        if ($username == NULL) {
+            $k = 5;
+        } else {
+            $k = $this->request->getVar('k');
+        }
+        // menghilangkan angka
+        $suhu2 = preg_replace('/[^0-9,.]/', '', $suhu1);
+        $kelembaban2 = preg_replace('/[^0-9,.]/', '', $kelembaban1);
+        // mengganti koma dengan titik
+        $suhu_br = str_replace(',', '.', $suhu2);
+        $kelembaban_br = str_replace(',', '.', $kelembaban2);
         // validasi nilai K
         if ($k == 0) {
             session()->setFlashdata('message', 'notzero');
+            return redirect()->to('/testing');
+            // validasi nilai suhu dan kelembaban
+        } else if ($suhu_br >= 100 || $kelembaban_br >= 100) {
+            session()->setFlashdata('message', 'lebihseratus');
             return redirect()->to('/testing');
         } else {
             $data_baru = [
@@ -121,12 +137,14 @@ class Testing extends BaseController
             ];
             $this->DtBaruModel->save($data_ubah);
 
-            return redirect()->to('/testing/hasil');
+            return redirect()->to('/hasil');
         }
     }
 
     public function hasil()
     {
+        $username = $this->AdminModel->where(['username' => session()->get('username')])->first();
+
         $db = \Config\Database::connect();
         // ambil data id_br yang baru
         $getid = $this->DtBaruModel->select('id_br')->orderBy('id_br DESC')->first();
@@ -138,9 +156,14 @@ class Testing extends BaseController
                             AND data_awal.id_kt = kategori.id_kt
                             AND jarak.id_br = $id")->getResultArray();
         $data = [
+            'title' => 'Hasil Perhitungan',
             'data_baru' => $data_baru,
             'data_jarak' => $data_jarak,
         ];
-        echo view('v_hasil', $data);
+        if ($username == NULL) {
+            echo view('v_hasiltest', $data);
+        } else {
+            echo view('v_hasil', $data);
+        }
     }
 }

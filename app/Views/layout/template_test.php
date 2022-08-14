@@ -65,9 +65,7 @@
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                 <div class="dropdown-user-scroll scrollbar-outer">
                                     <li>
-                                        <a class="dropdown-item" href="/profile">My Profile</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                                        <a class="dropdown-item" href="/login">Login</a>
                                     </li>
                                 </div>
                             </ul>
@@ -83,46 +81,10 @@
             <div class="sidebar-wrapper scrollbar scrollbar-inner">
                 <div class="sidebar-content">
                     <ul class="nav nav-primary">
-                        <li class="nav-item <?php $uri = service('uri');
-                                            if ($uri->getSegment(1) == 'dashboard') {
-                                                echo 'active';
-                                            } ?>">
-                            <a href="/dashboard">
-                                <i class="flaticon-home"></i>
-                                <p>Dashboard</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-primary">
-                        <li class="nav-item <?php $uri = service('uri');
-                                            if ($uri->getSegment(1) == 'training') {
-                                                echo 'active';
-                                            } ?>">
-                            <a href="/training">
-                                <i class="flaticon-pen"></i>
-                                <p>Data Training</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-primary">
-                        <li class="nav-item <?php $uri = service('uri');
-                                            if ($uri->getSegment(1) == 'testing') {
-                                                echo 'active';
-                                            } ?>">
-                            <a href="/testing">
-                                <i class="flaticon-analytics"></i>
-                                <p>Testing Data</p>
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-primary">
-                        <li class="nav-item <?php $uri = service('uri');
-                                            if ($uri->getSegment(1) == 'logout') {
-                                                echo 'active';
-                                            } ?>">
-                            <a data-toggle="modal" data-target="#logoutModal">
-                                <i class="fa fa-sign-out-alt"></i>
-                                <p>Logout</p>
+                        <li class="nav-item">
+                            <a href="/loginadmin">
+                                <i class="fa fa-sign-in-alt"></i>
+                                <p>Login</p>
                             </a>
                         </li>
                     </ul>

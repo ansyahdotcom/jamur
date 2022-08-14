@@ -30,6 +30,7 @@ class Dashboard extends BaseController
                             AND data_awal.id_kt = kategori.id_kt
                             AND jarak.id_br = $id")->getResultArray();
         $data = [
+            'title' => 'Dashboard',
             'nama' => $username,
             'data_baru' => $data_baru,
             'data_jarak' => $data_jarak,

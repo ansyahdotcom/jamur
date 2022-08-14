@@ -1,4 +1,4 @@
-<?= $this->extend('layout/template'); ?>
+<?= $this->extend('layout/template_test'); ?>
 <?= $this->section('content'); ?>
 <div class="page-inner">
     <h4 class="page-title">Hasil Perhitungan</h4>
@@ -14,10 +14,6 @@
                         <div class="form-group">
                             <label for="kelembaban">Kelembaban</label>
                             <input type="text" value="<?= $dt_br['kelembaban_br']; ?>" class="form-control" id="kelembaban" name="kelembaban" placeholder="Kelembaban" autocomplete="off" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="k">K</label>
-                            <input type="text" value="<?= $dt_br['k']; ?>" class="form-control" id="k" name="k" placeholder="Nilai K" autocomplete="off" readonly>
                         </div>
                     </div>
                 </div>

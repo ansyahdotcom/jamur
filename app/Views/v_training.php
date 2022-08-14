@@ -44,7 +44,7 @@
                                         <td><?= $i++; ?></td>
                                         <td><?= $tr['suhu']; ?></td>
                                         <td><?= $tr['kelembaban']; ?></td>
-                                        <td><?= $tr['produksi']; ?></td>
+                                        <td><?= $tr['nama_kt']; ?></td>
                                         <!-- <td>
                                             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ubahtr<?= $id_awal ?>">
                                                 Ubah
@@ -78,7 +78,7 @@
                 <div class="modal-body">
                     <?= csrf_field(); ?>
                     <div class="form-group">
-                        <label for="filecsv">File CSV</label>
+                        <label for="filecsv" class="text-success">Upload file dengan ekstensi .csv/.xlsx/.xls</label>
                         <input type="file" id="filecsv" name="filecsv" class="form-control" placeholder="Import dengan ekstensi .csv" required>
                     </div>
                 </div>

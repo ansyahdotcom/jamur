@@ -18,10 +18,11 @@ class Training extends BaseController
     public function index()
     {
         $username = $this->AdminModel->where(['username' => session()->get('username')])->first();
-
+        $db = \Config\Database::connect();
+        $train = $db->query("SELECT * FROM data_awal, kategori WHERE data_awal.id_kt = kategori.id_kt")->getResultArray();
         $data = [
             'title' => 'Halaman Data Training',
-            'train' => $this->TrainingModel->findAll(),
+            'train' => $train,
         ];
 
         if ($username == NULL) {
@@ -39,9 +40,13 @@ class Training extends BaseController
             $excelreader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         } else if ('xlsx' == $ext) {
             $excelreader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-        } else {
+        } else if ('xls' == $ext) {
             $excelreader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-        }
+        } 
+        // else {
+        //     session()->setFlashdata('message', 'wrongupload');
+        //     return redirect()->to('/training');
+        // }
         //baca file
         $spreadsheet = $excelreader->load($file);
         //ambil sheet active

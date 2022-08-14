@@ -67,5 +67,10 @@ $(function() {
             icon: 'error',
             title: 'Nilai K tidak boleh 0!',
         });
+    } else if (flashData == 'lebihseratus') {
+        Toast.fire({
+            icon: 'error',
+            title: 'Nilai suhu dan kelembaban tidak boleh lebih dari 100!',
+        });
     }
 });
