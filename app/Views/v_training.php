@@ -180,28 +180,5 @@ foreach ($train as $tr) :
             </div>
         </div>
     </div>
-    <!-- Modal hapus semua -->
-    <div class="modal fade" id="trainingData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Proses training data</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="training/train" method="post">
-                    <div class="modal-body">
-                        <?= csrf_field(); ?>
-                        <p>Apakah Anda akan melakukan proses training data?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Jalankan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 <?php endforeach; ?>
 <?= $this->endSection(); ?>

@@ -19,34 +19,38 @@ class Training extends BaseController
     {
         $username = $this->AdminModel->where(['username' => session()->get('username')])->first();
         $db = \Config\Database::connect();
-        $train = $db->query("SELECT * FROM data_awal, kategori WHERE data_awal.id_kt = kategori.id_kt")->getResultArray();
+        $train = $db->query("SELECT * FROM data_awal, kategori WHERE data_awal.id_kt = kategori.id_kt
+                                ORDER BY data_awal.id_awal ASC")->getResultArray();
         $data = [
             'title' => 'Halaman Data Training',
             'train' => $train,
         ];
 
         if ($username == NULL) {
-            return redirect()->to('/auth');
+            return redirect()->to('/');
         } else {
             echo view('v_training', $data);
         }
     }
 
+    // tambah data training
     public function import()
     {
         $file = $this->request->getFile('filecsv');
         $ext = $file->getClientExtension();
+        // cek ekstensi file
         if ('csv' == $ext) {
             $excelreader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         } else if ('xlsx' == $ext) {
             $excelreader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         } else if ('xls' == $ext) {
             $excelreader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-        } 
-        // else {
-        //     session()->setFlashdata('message', 'wrongupload');
-        //     return redirect()->to('/training');
-        // }
+        } else if ('csv' != $ext || 'xlsx' != $ext || 'xls' != $ext) {
+            session()->setFlashdata('message', 'wrongext');
+            return redirect()->back();
+        }
+        // dihapus dulu karena proses import jadi 1 paket saat tambah data
+        $this->TrainingModel->emptyTable('data_awal');
         //baca file
         $spreadsheet = $excelreader->load($file);
         //ambil sheet active
@@ -80,6 +84,7 @@ class Training extends BaseController
         return redirect()->back();
     }
 
+    // ubah data training
     public function ubah()
     {
         $id_awal = $this->request->getVar('id_awal');
@@ -97,6 +102,7 @@ class Training extends BaseController
         return redirect()->back();
     }
 
+    // hapus data training
     public function hapus()
     {
         $id_awal = $this->request->getVar('id_awal');
@@ -110,11 +116,10 @@ class Training extends BaseController
         }
     }
 
+    // hapus semua data training
     public function hapus_semua()
     {
-        $db = \Config\Database::connect();
-        $builder = $db->table('data_awal');
-        $hapus = $builder->emptyTable('data_awal');
+        $hapus = $this->TrainingModel->emptyTable('data_awal');
         if ($hapus) {
             session()->setFlashdata('message', 'delete');
             return redirect()->back();

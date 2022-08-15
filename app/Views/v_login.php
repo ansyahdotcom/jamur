@@ -23,6 +23,9 @@
                 <div class="form-group" align="right">
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
+                <div class="form-group" align="right">
+                    <a href="/">Kembali ke halaman testing data</a>
+                </div>
             </div>
         </form>
     </div>

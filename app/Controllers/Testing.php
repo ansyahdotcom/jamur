@@ -33,8 +33,10 @@ class Testing extends BaseController
         ];
 
         if ($username == NULL) {
+            // jika tanpa login
             echo view('v_test', $data);
         } else {
+            // jika login
             echo view('v_testing', $data);
         }
     }
@@ -149,7 +151,7 @@ class Testing extends BaseController
         // ambil data id_br yang baru
         $getid = $this->DtBaruModel->select('id_br')->orderBy('id_br DESC')->first();
         $id = $getid['id_br'];
-        // tampilkan di v_hasil
+        // tampilkan hasil
         $data_baru = $db->query("SELECT * FROM data_baru ORDER BY id_br DESC LIMIT 1")->getResultArray();
         $data_jarak = $db->query("SELECT jarak.jarak, kategori.nama_kt FROM jarak, data_awal, kategori
                             WHERE jarak.id_awal = data_awal.id_awal
@@ -161,8 +163,10 @@ class Testing extends BaseController
             'data_jarak' => $data_jarak,
         ];
         if ($username == NULL) {
+            // jika tanpa login
             echo view('v_hasiltest', $data);
         } else {
+            // jika login
             echo view('v_hasil', $data);
         }
     }

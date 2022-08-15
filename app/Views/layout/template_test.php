@@ -65,7 +65,7 @@
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                 <div class="dropdown-user-scroll scrollbar-outer">
                                     <li>
-                                        <a class="dropdown-item" href="/login">Login</a>
+                                        <a class="dropdown-item" href="/loginadmin">Login</a>
                                     </li>
                                 </div>
                             </ul>
@@ -80,6 +80,17 @@
         <div class="sidebar sidebar-style-2">
             <div class="sidebar-wrapper scrollbar scrollbar-inner">
                 <div class="sidebar-content">
+                    <ul class="nav nav-primary">
+                        <li class="nav-item <?php $uri = service('uri');
+                                            if ($uri->getSegment(1) == 'testing') {
+                                                echo 'active';
+                                            } ?>">
+                            <a href="/testing">
+                                <i class="flaticon-analytics"></i>
+                                <p>Testing Data</p>
+                            </a>
+                        </li>
+                    </ul>
                     <ul class="nav nav-primary">
                         <li class="nav-item">
                             <a href="/loginadmin">
@@ -121,7 +132,7 @@
             <footer class="footer">
                 <div class="container-fluid">
                     <div class="copyright ml-auto">
-                         FORECASTING PRODUKSI JAMUR
+                        FORECASTING PRODUKSI JAMUR
                     </div>
                 </div>
             </footer>

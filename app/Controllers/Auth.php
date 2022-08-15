@@ -53,7 +53,7 @@ class Auth extends BaseController
     {
         session()->destroy(true);
         session()->setFlashdata('message', 'logout');
-        return redirect()->to('/auth');
+        return redirect()->to('/');
     }
 
     public function tambah()

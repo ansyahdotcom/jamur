@@ -16,7 +16,7 @@
                         <input type="text" class="form-control" id="kelembaban" name="kelembaban" placeholder="Isikan hanya angka, gunakan tanda titik (.) untuk bilangan desimal" autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label for="k">K</label>
+                        <label for="k">Nilai K</label>
                         <input type="number" class="form-control" id="k" name="k" placeholder="Isikan hanya angka" autocomplete="off">
                     </div>
                     <div class="form-group">
@@ -25,9 +25,6 @@
                 </form>
             </div>
         </div>
-    </div>
-    <div class="row">
-
     </div>
 </div>
 <?= $this->endSection(); ?>

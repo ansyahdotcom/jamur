@@ -117,6 +117,17 @@
                     </ul>
                     <ul class="nav nav-primary">
                         <li class="nav-item <?php $uri = service('uri');
+                                            if ($uri->getSegment(1) == 'history') {
+                                                echo 'active';
+                                            } ?>">
+                            <a href="/history">
+                                <i class="flaticon-list"></i>
+                                <p>Riwayat Testing Data</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-primary">
+                        <li class="nav-item <?php $uri = service('uri');
                                             if ($uri->getSegment(1) == 'logout') {
                                                 echo 'active';
                                             } ?>">

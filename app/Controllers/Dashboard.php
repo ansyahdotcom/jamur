@@ -22,25 +22,29 @@ class Dashboard extends BaseController
         $db = \Config\Database::connect();
         // ambil data id_br yang baru
         $getid = $this->DtBaruModel->select('id_br')->orderBy('id_br DESC')->first();
-        $id = $getid['id_br'];
-        // tampilkan di v_hasil
-        $data_baru = $db->query("SELECT * FROM data_baru ORDER BY id_br DESC LIMIT 1")->getResultArray();
-        $data_jarak = $db->query("SELECT jarak.jarak, kategori.nama_kt FROM jarak, data_awal, kategori
+        if ($getid == NULL) {
+            $data = [
+                'title' => 'Dashboard'
+            ];
+        } else {
+            $id = $getid['id_br'];
+            // tampilkan di v_hasil
+            $data_baru = $db->query("SELECT * FROM data_baru ORDER BY id_br DESC LIMIT 1")->getResultArray();
+            $data_jarak = $db->query("SELECT jarak.jarak, kategori.nama_kt FROM jarak, data_awal, kategori
                             WHERE jarak.id_awal = data_awal.id_awal
                             AND data_awal.id_kt = kategori.id_kt
                             AND jarak.id_br = $id")->getResultArray();
-        $data = [
-            'title' => 'Dashboard',
-            'nama' => $username,
-            'data_baru' => $data_baru,
-            'data_jarak' => $data_jarak,
-        ];
+            $data = [
+                'title' => 'Dashboard',
+                'data_baru' => $data_baru,
+                'data_jarak' => $data_jarak,
+            ];
+        }
 
         if ($username == NULL) {
-            return redirect()->to('/auth');
+            return redirect()->to('/');
         } else {
             echo view('v_dashboard', $data);
         }
     }
-
 }

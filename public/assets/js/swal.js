@@ -72,5 +72,10 @@ $(function() {
             icon: 'error',
             title: 'Nilai suhu dan kelembaban tidak boleh lebih dari 100!',
         });
+    } else if (flashData == 'wrongext') {
+        Toast.fire({
+            icon: 'error',
+            title: 'Format file tidak sesuai!',
+        });
     }
 });
