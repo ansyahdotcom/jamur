@@ -65,7 +65,7 @@
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                 <div class="dropdown-user-scroll scrollbar-outer">
                                     <li>
-                                        <a class="dropdown-item" href="/loginadmin">Login</a>
+                                        <a class="dropdown-item" href="<?= base_url(); ?>/loginadmin">Login</a>
                                     </li>
                                 </div>
                             </ul>
@@ -85,7 +85,7 @@
                                             if ($uri->getSegment(1) == 'testing') {
                                                 echo 'active';
                                             } ?>">
-                            <a href="/testing">
+                            <a href="<?= base_url(); ?>/testing">
                                 <i class="flaticon-analytics"></i>
                                 <p>Testing Data</p>
                             </a>
@@ -93,7 +93,7 @@
                     </ul>
                     <ul class="nav nav-primary">
                         <li class="nav-item">
-                            <a href="/loginadmin">
+                            <a href="<?= base_url(); ?>/loginadmin">
                                 <i class="fa fa-sign-in-alt"></i>
                                 <p>Login</p>
                             </a>
@@ -123,7 +123,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                <a href="/logout" class="btn btn-primary">Keluar</a>
+                                <a href="<?= base_url(); ?>/logout" class="btn btn-primary">Keluar</a>
                             </div>
                         </div>
                     </div>

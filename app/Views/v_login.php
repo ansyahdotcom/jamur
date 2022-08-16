@@ -24,7 +24,7 @@
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
                 <div class="form-group" align="right">
-                    <a href="/">Kembali ke halaman testing data</a>
+                    <a href="<?= base_url(); ?>">Kembali ke halaman testing data</a>
                 </div>
             </div>
         </form>

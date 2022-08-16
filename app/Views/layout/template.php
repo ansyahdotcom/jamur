@@ -65,7 +65,7 @@
                             <ul class="dropdown-menu dropdown-user animated fadeIn">
                                 <div class="dropdown-user-scroll scrollbar-outer">
                                     <li>
-                                        <a class="dropdown-item" href="/profile">My Profile</a>
+                                        <a class="dropdown-item" href="<?= base_url(); ?>/profile">My Profile</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">Logout</a>
                                     </li>
@@ -87,7 +87,7 @@
                                             if ($uri->getSegment(1) == 'dashboard') {
                                                 echo 'active';
                                             } ?>">
-                            <a href="/dashboard">
+                            <a href="<?= base_url(); ?>/dashboard">
                                 <i class="flaticon-home"></i>
                                 <p>Dashboard</p>
                             </a>
@@ -98,7 +98,7 @@
                                             if ($uri->getSegment(1) == 'training') {
                                                 echo 'active';
                                             } ?>">
-                            <a href="/training">
+                            <a href="<?= base_url(); ?>/training">
                                 <i class="flaticon-pen"></i>
                                 <p>Data Training</p>
                             </a>
@@ -109,7 +109,7 @@
                                             if ($uri->getSegment(1) == 'testing') {
                                                 echo 'active';
                                             } ?>">
-                            <a href="/testing">
+                            <a href="<?= base_url(); ?>/testing">
                                 <i class="flaticon-analytics"></i>
                                 <p>Testing Data</p>
                             </a>
@@ -120,7 +120,7 @@
                                             if ($uri->getSegment(1) == 'history') {
                                                 echo 'active';
                                             } ?>">
-                            <a href="/history">
+                            <a href="<?= base_url(); ?>/history">
                                 <i class="flaticon-list"></i>
                                 <p>Riwayat Testing Data</p>
                             </a>
@@ -131,7 +131,7 @@
                                             if ($uri->getSegment(1) == 'nilaik') {
                                                 echo 'active';
                                             } ?>">
-                            <a href="/nilaik">
+                            <a href="<?= base_url(); ?>/nilaik">
                                 <i class="icon-settings"></i>
                                 <p>Konfigurasi Nilai K</p>
                             </a>
@@ -172,7 +172,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                <a href="/logout" class="btn btn-primary">Keluar</a>
+                                <a href="<?= base_url(); ?>/logout" class="btn btn-primary">Keluar</a>
                             </div>
                         </div>
                     </div>
