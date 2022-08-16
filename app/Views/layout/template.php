@@ -128,6 +128,17 @@
                     </ul>
                     <ul class="nav nav-primary">
                         <li class="nav-item <?php $uri = service('uri');
+                                            if ($uri->getSegment(1) == 'nilaik') {
+                                                echo 'active';
+                                            } ?>">
+                            <a href="/nilaik">
+                                <i class="icon-settings"></i>
+                                <p>Konfigurasi Nilai K</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-primary">
+                        <li class="nav-item <?php $uri = service('uri');
                                             if ($uri->getSegment(1) == 'logout') {
                                                 echo 'active';
                                             } ?>">

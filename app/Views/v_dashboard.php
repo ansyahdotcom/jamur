@@ -88,8 +88,11 @@
                     </div>
                 </div>
             </div>
-        <?php endif; ?>
         </div>
+    <?php else : ?>
+        <div class="row">
+        </div>
+    <?php endif; ?>
 </div>
 
 <?= $this->endSection(); ?>

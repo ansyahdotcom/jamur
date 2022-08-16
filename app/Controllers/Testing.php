@@ -7,6 +7,7 @@ use App\Models\TrainingModel;
 use App\Models\DtBaruModel;
 use App\Models\JarakModel;
 use App\Models\JarakTempModel;
+use App\Models\NilaiKModel;
 
 class Testing extends BaseController
 {
@@ -15,6 +16,7 @@ class Testing extends BaseController
     protected $DtBaruModel;
     protected $JarakModel;
     protected $JarakTempModel;
+    protected $NilaiKModel;
     public function __construct()
     {
         $this->AdminModel = new AdminModel;
@@ -22,6 +24,7 @@ class Testing extends BaseController
         $this->DtBaruModel = new DtBaruModel;
         $this->JarakModel = new JarakModel;
         $this->JarakTempModel = new JarakTempModel;
+        $this->NilaiKModel = new NilaiKModel;
     }
 
     public function index()
@@ -49,7 +52,8 @@ class Testing extends BaseController
         $suhu1 = $this->request->getVar('suhu');
         $kelembaban1 = $this->request->getVar('kelembaban');
         if ($username == NULL) {
-            $k = 5;
+            $nilaik = $this->NilaiKModel->orderBy('idk ASC')->limit(1)->first();
+            $k = $nilaik['k'];
         } else {
             $k = $this->request->getVar('k');
         }
